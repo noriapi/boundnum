@@ -2,14 +2,11 @@
 name = "boundnum"
 description = "Bounded number type."
 version = "0.1.0"
-authors = ["dnikk <13849365+dnikk@users.noreply.github.com>"]
+authors = ["noriapi <70106808+noriapi@users.noreply.github.com>"]
 edition = "2018"
 license-file = "LICENSE"
 repository = "https://github.com/noriapi/boundnum"
 readme = "README.md"
-
-[badges]
-github = { repository = "tanakh/hogehoge", workflow = "Rust" }
 
 [dependencies]
 typenum = "1.12.0"
