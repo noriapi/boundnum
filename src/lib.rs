@@ -69,3 +69,16 @@ where
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn bounded_is_copyable() {
+        use expr::*;
+        use impls::impls;
+        use typenum::consts::*;
+        assert!(impls!(Bounded<u8, Range<U3, U4>>: Copy));
+    }
+}
