@@ -12,11 +12,13 @@
 //! }
 //! ```
 
+mod default;
 pub mod expr;
 pub mod value;
 
 pub use typenum;
 
+use default::DefaultValueType;
 use expr::{AsBound, Contains};
 use shrinkwraprs::Shrinkwrap;
 use value::ToValue;
@@ -37,6 +39,22 @@ impl<T, B: AsBound<T> + Default> Bounded<T, B> {
     {
         Bounded {
             value: A::value(),
+            bound: Default::default(),
+        }
+    }
+}
+
+/// If the bound contains zero, the `Bounded` implements `Default` trait.
+///
+/// If `B: AsBound` contains `T`'s default value, `Bounded<T, B>` implements `Default` trait.
+impl<T, B> Default for Bounded<T, B>
+where
+    T: DefaultValueType,
+    B: AsBound<T> + Default + Contains<<T as DefaultValueType>::Output, Output = typenum::True>,
+{
+    fn default() -> Self {
+        Bounded {
+            value: T::default(),
             bound: Default::default(),
         }
     }
@@ -80,5 +98,21 @@ mod tests {
         use impls::impls;
         use typenum::consts::*;
         assert!(impls!(Bounded<u8, Range<U3, U4>>: Copy));
+    }
+
+    #[test]
+    fn impl_default() {
+        use expr::*;
+        use impls::impls;
+        use typenum::consts::*;
+        assert!(impls!(Bounded<i8, Range<N3, P4>>: Default))
+    }
+
+    #[test]
+    fn not_impl_default() {
+        use expr::*;
+        use impls::impls;
+        use typenum::consts::*;
+        assert!(impls!(Bounded<u8, Range<U3, U4>>: !Default))
     }
 }
