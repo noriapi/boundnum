@@ -31,7 +31,7 @@ pub trait TypeExpr<A> {
 pub type Call<O, A> = <O as TypeExpr<A>>::Output;
 
 /// Represents an argument.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct Arg;
 impl<A> ValueExpr<A> for Arg {
     type Output = A;

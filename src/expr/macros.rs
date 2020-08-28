@@ -14,7 +14,7 @@ macro_rules! define_unary_operator {
             use $type_operator as TypeOperator;
 
             $(#[$meta])*
-            #[derive(Debug, Default)]
+            #[derive(Debug, Default, Clone, Copy)]
             pub struct $name<S>(S);
             impl<A, S> ValueExpr<A> for $name<S>
             where
@@ -54,7 +54,7 @@ macro_rules! define_binary_operator {
             use $val_trait as ValTrait;
 
             $(#[$meta])*
-            #[derive(Debug, Default)]
+            #[derive(Debug, Default, Clone, Copy)]
             pub struct $name<L, R> {
                 lhs: L,
                 rhs: R,
