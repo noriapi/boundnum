@@ -186,36 +186,57 @@ impl_tovalue_for_unsigned!(u32, U32);
 impl_tovalue_for_unsigned!(u64, U64);
 impl_tovalue_for_unsigned!(usize, USIZE);
 
+macro_rules! impl_tovalue_for_bits {
+    ( $ToType:ty, $Const:tt ) => {
+        impl ToValue<$ToType> for B0 {
+            #[inline]
+            fn value() -> $ToType {
+                Self::$Const
+            }
+        }
+
+        impl ToValue<$ToType> for B1 {
+            #[inline]
+            fn value() -> $ToType {
+                Self::$Const
+            }
+        }
+    };
+}
+
+impl_tovalue_for_bits!(u8, U8);
+impl_tovalue_for_bits!(bool, BOOL);
+
 #[cfg(test)]
 mod tests {
     macro_rules! min_bound_tests {
-    ( $pt:ty ) => {
-		    #[test]
+        ( $pt:ty ) => {
+            #[test]
             fn inner_min() {
                 assert_eq!(<$pt>::MIN, <$pt as TypeBound>::Min::value());
             }
 
-		    #[test]
+            #[test]
             fn outer_min() {
                 use impls::impls;
                 assert!(impls!(OuterOf<<$pt as TypeBound>::Min>: !ToValue<$pt>));
             }
-	    };
+        };
     }
 
     macro_rules! max_bound_tests {
-	    ( $pt:ty ) => {
-		    #[test]
+        ( $pt:ty ) => {
+            #[test]
             fn inner_max() {
                 assert_eq!(<$pt>::MAX, <$pt as TypeBound>::Max::value());
             }
 
-		    #[test]
+            #[test]
             fn outer_max() {
                 use impls::impls;
                 assert!(impls!(OuterOf<<$pt as TypeBound>::Max>: !ToValue<$pt>));
             }
-	    };
+        };
     }
 
     macro_rules! zero_test {
@@ -223,6 +244,20 @@ mod tests {
             #[test]
             fn zero() {
                 assert_eq!((0 as $pt), Z0::value());
+            }
+        };
+    }
+
+    macro_rules! bit_tests {
+        ( $pt:ty ) => {
+            #[test]
+            fn false_() {
+                assert_eq!(false as $pt, B0::value());
+            }
+
+            #[test]
+            fn true_() {
+                assert_eq!(true as $pt, B1::value());
             }
         };
     }
@@ -265,6 +300,7 @@ mod tests {
     mod u8 {
         use super::super::*;
         max_bound_tests!(u8);
+        bit_tests!(u8);
     }
 
     mod u16 {
@@ -285,5 +321,10 @@ mod tests {
     mod usize {
         use super::super::*;
         max_bound_tests!(usize);
+    }
+
+    mod bool {
+        use super::super::*;
+        bit_tests!(bool);
     }
 }
