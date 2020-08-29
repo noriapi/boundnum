@@ -2,7 +2,7 @@ use super::{TypeExpr, ValueExpr};
 use crate::typenum::*;
 use crate::value::ToValue;
 
-macro_rules! impl_op_for_typenum {
+macro_rules! impl_expr_for_typenum {
     ( $name:ident $(< $($p:ident),+ >)? $(
         where
             $($pb:ident: $first_bound:ident $(+ $rest_bound:ident)* ),+
@@ -28,10 +28,10 @@ macro_rules! impl_op_for_typenum {
 
 }
 
-impl_op_for_typenum! { PInt<U> where U: NonZero + Unsigned }
-impl_op_for_typenum! { NInt<U> where U: NonZero + Unsigned }
-impl_op_for_typenum! { Z0 }
-impl_op_for_typenum! { B0 }
-impl_op_for_typenum! { B1 }
-impl_op_for_typenum! { UTerm }
-impl_op_for_typenum! { UInt<U, B> where U: Unsigned, B: Bit }
+impl_expr_for_typenum! { PInt<U> where U: NonZero + Unsigned }
+impl_expr_for_typenum! { NInt<U> where U: NonZero + Unsigned }
+impl_expr_for_typenum! { Z0 }
+impl_expr_for_typenum! { B0 }
+impl_expr_for_typenum! { B1 }
+impl_expr_for_typenum! { UTerm }
+impl_expr_for_typenum! { UInt<U, B> where U: Unsigned, B: Bit }
