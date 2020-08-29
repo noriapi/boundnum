@@ -91,28 +91,27 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use expr::*;
+    use typenum::consts::*;
+
+    type UnBoundedI32 = Bounded<i32, True>;
+    type NonZeroI32 = Bounded<i32, Gt<Arg, Z0>>;
 
     #[test]
     fn bounded_is_copyable() {
-        use expr::*;
         use impls::impls;
-        use typenum::consts::*;
-        assert!(impls!(Bounded<u8, Range<U3, U4>>: Copy));
+        assert!(impls!(UnBoundedI32: Copy));
     }
 
     #[test]
     fn impl_default() {
-        use expr::*;
         use impls::impls;
-        use typenum::consts::*;
-        assert!(impls!(Bounded<i8, Range<N3, P4>>: Default))
+        assert!(impls!(UnBoundedI32: Default))
     }
 
     #[test]
     fn not_impl_default() {
-        use expr::*;
         use impls::impls;
-        use typenum::consts::*;
-        assert!(impls!(Bounded<u8, Range<U3, U4>>: !Default))
+        assert!(impls!(NonZeroI32: !Default))
     }
 }
