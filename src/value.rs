@@ -78,26 +78,46 @@ impl TypeBound for isize {
     type Max = <i64 as TypeBound>::Max;
 }
 
-macro_rules! impl_to_value_for_integer {
-    ( $ToT:ty, $Const:tt ) => {
-        impl<I: Integer> ToValue<$ToT> for I
+macro_rules! impl_tovalue_for_integer {
+    ( $ToType:ty, $Const:tt ) => {
+        impl ToValue<$ToType> for Z0 {
+            #[inline]
+            fn value() -> $ToType {
+                Self::$Const
+            }
+        }
+
+        impl<U> ToValue<$ToType> for NInt<U>
         where
-            I: Cmp<OuterOf<<$ToT as TypeBound>::Min>, Output = Greater>
-                + Cmp<OuterOf<<$ToT as TypeBound>::Max>, Output = Less>,
+            U: Unsigned + NonZero,
+            NInt<U>: Cmp<OuterOf<<$ToType as TypeBound>::Min>, Output = Greater>
+                + Cmp<OuterOf<<$ToType as TypeBound>::Max>, Output = Less>,
         {
             #[inline]
-            fn value() -> $ToT {
+            fn value() -> $ToType {
+                Self::$Const
+            }
+        }
+
+        impl<U> ToValue<$ToType> for PInt<U>
+        where
+            U: Unsigned + NonZero,
+            PInt<U>: Cmp<OuterOf<<$ToType as TypeBound>::Min>, Output = Greater>
+                + Cmp<OuterOf<<$ToType as TypeBound>::Max>, Output = Less>,
+        {
+            #[inline]
+            fn value() -> $ToType {
                 Self::$Const
             }
         }
     };
 }
 
-impl_to_value_for_integer!(i8, I8);
-impl_to_value_for_integer!(i16, I16);
-impl_to_value_for_integer!(i32, I32);
-impl_to_value_for_integer!(i64, I64);
-impl_to_value_for_integer!(isize, ISIZE);
+impl_tovalue_for_integer!(i8, I8);
+impl_tovalue_for_integer!(i16, I16);
+impl_tovalue_for_integer!(i32, I32);
+impl_tovalue_for_integer!(i64, I64);
+impl_tovalue_for_integer!(isize, ISIZE);
 
 impl TypeBound for u8 {
     type Min = U0;
@@ -137,25 +157,34 @@ impl TypeBound for usize {
     type Max = <u64 as TypeBound>::Max;
 }
 
-macro_rules! impl_to_value_for_unsigned {
-    ( $ToT:ty, $Const:tt ) => {
-        impl<U: Unsigned> ToValue<$ToT> for U
+macro_rules! impl_tovalue_for_unsigned {
+    ( $ToType:ty, $Const:tt ) => {
+        impl ToValue<$ToType> for UTerm {
+            #[inline]
+            fn value() -> $ToType {
+                Self::$Const
+            }
+        }
+
+        impl<U, B> ToValue<$ToType> for UInt<U, B>
         where
-            U: Cmp<OuterOf<<$ToT as TypeBound>::Max>, Output = Less>,
+            U: Unsigned,
+            B: Bit,
+            UInt<U, B>: Cmp<OuterOf<<$ToType as TypeBound>::Max>, Output = Less>,
         {
             #[inline]
-            fn value() -> $ToT {
+            fn value() -> $ToType {
                 Self::$Const
             }
         }
     };
 }
 
-impl_to_value_for_unsigned!(u8, U8);
-impl_to_value_for_unsigned!(u16, U16);
-impl_to_value_for_unsigned!(u32, U32);
-impl_to_value_for_unsigned!(u64, U64);
-impl_to_value_for_unsigned!(usize, USIZE);
+impl_tovalue_for_unsigned!(u8, U8);
+impl_tovalue_for_unsigned!(u16, U16);
+impl_tovalue_for_unsigned!(u32, U32);
+impl_tovalue_for_unsigned!(u64, U64);
+impl_tovalue_for_unsigned!(usize, USIZE);
 
 #[cfg(test)]
 mod tests {
