@@ -21,6 +21,7 @@ pub use typenum;
 use default::DefaultValueType;
 use expr::{AsBound, Contains};
 use shrinkwraprs::Shrinkwrap;
+use std::marker::PhantomData;
 use value::ToValue;
 
 /// A wrapper struct representing bounded numeric type.
@@ -28,10 +29,10 @@ use value::ToValue;
 pub struct Bounded<T, B: AsBound<T>> {
     #[shrinkwrap(main_field)]
     value: T,
-    bound: B,
+    bound: PhantomData<B>,
 }
 
-impl<T, B: AsBound<T> + Default> Bounded<T, B> {
+impl<T, B: AsBound<T>> Bounded<T, B> {
     pub fn new<A>() -> Self
     where
         A: ToValue<T>,
@@ -39,8 +40,12 @@ impl<T, B: AsBound<T> + Default> Bounded<T, B> {
     {
         Bounded {
             value: A::value(),
-            bound: Default::default(),
+            bound: PhantomData,
         }
+    }
+
+    pub fn value(self) -> T {
+        self.value
     }
 }
 
@@ -50,12 +55,12 @@ impl<T, B: AsBound<T> + Default> Bounded<T, B> {
 impl<T, B> Default for Bounded<T, B>
 where
     T: DefaultValueType,
-    B: AsBound<T> + Default + Contains<<T as DefaultValueType>::Output, Output = typenum::True>,
+    B: AsBound<T> + Contains<<T as DefaultValueType>::Output, Output = typenum::True>,
 {
     fn default() -> Self {
         Bounded {
             value: T::default(),
-            bound: Default::default(),
+            bound: PhantomData,
         }
     }
 }
@@ -70,7 +75,7 @@ pub trait Boundable<B> {
 impl<T, B> Boundable<B> for T
 where
     T: Copy,
-    B: AsBound<T> + std::default::Default,
+    B: AsBound<T>,
 {
     type Raw = T;
     type Bound = B;
@@ -80,7 +85,7 @@ where
         if <Self::Bound as AsBound<T>>::contains(self) {
             Some(Bounded {
                 value: self,
-                bound: Default::default(),
+                bound: PhantomData,
             })
         } else {
             None
