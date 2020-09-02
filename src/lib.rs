@@ -2,10 +2,10 @@
 //!
 //! # Example
 //! ```
-//! use boundnum::{expr::*, typenum::consts::*, Bounded, Boundable};
+//! use boundnum::{expr::*, typenum::consts::*, Bounded, Boundable, CONST};
 //!
 //! fn main() {
-//!     let less4 = Bounded::<u8, Le<Arg, U4>>::new::<U1>();
+//!     const less4: Bounded::<u8, Le<Arg, U4>> = CONST!(U3);
 //!
 //!     let mul_of_two: Bounded<u8, Eq<U0, Rem<Arg, U2>>> =
 //!         (*less4 + 3).bound().unwrap_or(Bounded::new::<U0>());
@@ -38,7 +38,7 @@ impl<T, B: AsBound<T>> Bounded<T, B> {
         B: Contains<A, Output = typenum::True>,
     {
         Bounded {
-            value: A::value(),
+            value: A::VALUE,
             bound: PhantomData,
         }
     }
@@ -46,6 +46,32 @@ impl<T, B: AsBound<T>> Bounded<T, B> {
     pub fn value(self) -> T {
         self.value
     }
+}
+
+/// An easier way to define a const `Bounded` value.
+#[macro_export]
+macro_rules! CONST {
+    ($Arg:path) => {
+        <boundnum::Bounded<_, _> as boundnum::Const<$Arg>>::BOUNDED
+    };
+}
+
+/// Provides a const value for `Bounded`.
+///
+/// The type parameter `T` is the value on the `typenum` to be converted to the raw value of `Bounded`.
+pub trait Const<T> {
+    const BOUNDED: Self;
+}
+
+impl<A, T, B> Const<A> for Bounded<T, B>
+where
+    B: AsBound<T> + Contains<A, Output = typenum::True>,
+    A: ToValue<T>,
+{
+    const BOUNDED: Self = Bounded {
+        value: A::VALUE,
+        bound: PhantomData,
+    };
 }
 
 /// A trait of the type being converted to `Bounded`.

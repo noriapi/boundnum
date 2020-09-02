@@ -4,7 +4,7 @@ use std::ops::Add;
 use typenum::*;
 
 pub trait ToValue<I> {
-    fn value() -> I;
+    const VALUE: I;
 }
 
 pub trait TypeBound {
@@ -81,10 +81,7 @@ impl TypeBound for isize {
 macro_rules! impl_tovalue_for_integer {
     ( $ToType:ty, $Const:tt ) => {
         impl ToValue<$ToType> for Z0 {
-            #[inline]
-            fn value() -> $ToType {
-                Self::$Const
-            }
+            const VALUE: $ToType = Self::$Const;
         }
 
         impl<U> ToValue<$ToType> for NInt<U>
@@ -93,10 +90,7 @@ macro_rules! impl_tovalue_for_integer {
             NInt<U>: Cmp<OuterOf<<$ToType as TypeBound>::Min>, Output = Greater>
                 + Cmp<OuterOf<<$ToType as TypeBound>::Max>, Output = Less>,
         {
-            #[inline]
-            fn value() -> $ToType {
-                Self::$Const
-            }
+            const VALUE: $ToType = Self::$Const;
         }
 
         impl<U> ToValue<$ToType> for PInt<U>
@@ -105,10 +99,7 @@ macro_rules! impl_tovalue_for_integer {
             PInt<U>: Cmp<OuterOf<<$ToType as TypeBound>::Min>, Output = Greater>
                 + Cmp<OuterOf<<$ToType as TypeBound>::Max>, Output = Less>,
         {
-            #[inline]
-            fn value() -> $ToType {
-                Self::$Const
-            }
+            const VALUE: $ToType = Self::$Const;
         }
     };
 }
@@ -160,10 +151,7 @@ impl TypeBound for usize {
 macro_rules! impl_tovalue_for_unsigned {
     ( $ToType:ty, $Const:tt ) => {
         impl ToValue<$ToType> for UTerm {
-            #[inline]
-            fn value() -> $ToType {
-                Self::$Const
-            }
+            const VALUE: $ToType = Self::$Const;
         }
 
         impl<U, B> ToValue<$ToType> for UInt<U, B>
@@ -172,10 +160,7 @@ macro_rules! impl_tovalue_for_unsigned {
             B: Bit,
             UInt<U, B>: Cmp<OuterOf<<$ToType as TypeBound>::Max>, Output = Less>,
         {
-            #[inline]
-            fn value() -> $ToType {
-                Self::$Const
-            }
+            const VALUE: $ToType = Self::$Const;
         }
     };
 }
@@ -189,17 +174,11 @@ impl_tovalue_for_unsigned!(usize, USIZE);
 macro_rules! impl_tovalue_for_bits {
     ( $ToType:ty, $Const:tt ) => {
         impl ToValue<$ToType> for B0 {
-            #[inline]
-            fn value() -> $ToType {
-                Self::$Const
-            }
+            const VALUE: $ToType = Self::$Const;
         }
 
         impl ToValue<$ToType> for B1 {
-            #[inline]
-            fn value() -> $ToType {
-                Self::$Const
-            }
+            const VALUE: $ToType = Self::$Const;
         }
     };
 }
@@ -213,7 +192,7 @@ mod tests {
         ( $pt:ty ) => {
             #[test]
             fn inner_min() {
-                assert_eq!(<$pt>::MIN, <<$pt as TypeBound>::Min as ToValue<$pt>>::value());
+                assert_eq!(<$pt>::MIN, <<$pt as TypeBound>::Min as ToValue<$pt>>::VALUE);
             }
 
             #[test]
@@ -228,7 +207,7 @@ mod tests {
         ( $pt:ty ) => {
             #[test]
             fn inner_max() {
-                assert_eq!(<$pt>::MAX, <<$pt as TypeBound>::Max as ToValue<$pt>>::value());
+                assert_eq!(<$pt>::MAX, <<$pt as TypeBound>::Max as ToValue<$pt>>::VALUE);
             }
 
             #[test]
@@ -243,7 +222,7 @@ mod tests {
         ( $pt:ty ) => {
             #[test]
             fn zero() {
-                assert_eq!((0 as $pt), <Z0 as ToValue<$pt>>::value());
+                assert_eq!((0 as $pt), <Z0 as ToValue<$pt>>::VALUE);
             }
         };
     }
@@ -252,12 +231,12 @@ mod tests {
         ( $pt:ty ) => {
             #[test]
             fn false_() {
-                assert_eq!(false as $pt, <B0 as ToValue<$pt>>::value());
+                assert_eq!(false as $pt, <B0 as ToValue<$pt>>::VALUE);
             }
 
             #[test]
             fn true_() {
-                assert_eq!(true as $pt, <B1 as ToValue<$pt>>::value());
+                assert_eq!(true as $pt, <B1 as ToValue<$pt>>::VALUE);
             }
         };
     }
