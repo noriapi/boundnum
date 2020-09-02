@@ -3,6 +3,13 @@
 use crate::{expr::AsBound, Bounded};
 use std::cmp::Ordering;
 
+impl<T, B> Eq for Bounded<T, B>
+where
+    Self: PartialEq<Self>,
+    B: AsBound<T>,
+{
+}
+
 /// Bounded to Bounded PartialEq
 impl<OT, OB, ST, SB> PartialEq<Bounded<OT, OB>> for Bounded<ST, SB>
 where
@@ -13,6 +20,16 @@ where
     #[inline]
     fn eq(&self, other: &Bounded<OT, OB>) -> bool {
         self.as_ref().eq(other.as_ref())
+    }
+}
+
+impl<T, B> Ord for Bounded<T, B>
+where
+    T: Ord,
+    B: AsBound<T>,
+{
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.as_ref().cmp(other.as_ref())
     }
 }
 
