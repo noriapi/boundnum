@@ -11,7 +11,7 @@ pub trait DefaultValueType: std::marker::Sized {
 
     #[inline]
     fn default() -> Self {
-        Self::Output::value()
+        Self::Output::VALUE
     }
 }
 

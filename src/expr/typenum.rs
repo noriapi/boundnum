@@ -14,7 +14,7 @@ macro_rules! impl_expr_for_typenum {
         )? {
             type Output = A;
             fn call(_: A) -> Self::Output {
-                Self::value()
+                Self::VALUE
             }
         }
 
@@ -39,7 +39,7 @@ macro_rules! impl_expr_for_bit {
         impl<A> ValueExpr<A> for $name {
             type Output = bool;
             fn call(_: A) -> Self::Output {
-                Self::value()
+                Self::VALUE
             }
         }
 

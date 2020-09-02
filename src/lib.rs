@@ -38,7 +38,7 @@ impl<T, B: AsBound<T>> Bounded<T, B> {
         B: Contains<A, Output = typenum::True>,
     {
         Bounded {
-            value: A::value(),
+            value: A::VALUE,
             bound: PhantomData,
         }
     }
