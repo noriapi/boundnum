@@ -1,8 +1,15 @@
-use crate::value::ToValue;
+use crate::{
+    expr::{AsBound, Contains},
+    value::ToValue,
+    Bounded,
+};
+use std::marker::PhantomData;
 use typenum::{U0, Z0};
 
 pub trait DefaultValueType: std::marker::Sized {
     type Output: ToValue<Self>;
+
+    #[inline]
     fn default() -> Self {
         Self::Output::value()
     }
@@ -46,4 +53,21 @@ impl DefaultValueType for u64 {
 
 impl DefaultValueType for usize {
     type Output = U0;
+}
+
+/// If the bound contains zero, the `Bounded` implements `Default` trait.
+///
+/// If `B: AsBound` contains `T`'s default value, `Bounded<T, B>` implements `Default` trait.
+impl<T, B> Default for Bounded<T, B>
+where
+    T: DefaultValueType,
+    B: AsBound<T> + Contains<<T as DefaultValueType>::Output, Output = typenum::True>,
+{
+    #[inline]
+    fn default() -> Self {
+        Bounded {
+            value: T::default(),
+            bound: PhantomData,
+        }
+    }
 }

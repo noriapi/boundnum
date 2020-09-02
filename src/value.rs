@@ -213,7 +213,7 @@ mod tests {
         ( $pt:ty ) => {
             #[test]
             fn inner_min() {
-                assert_eq!(<$pt>::MIN, <$pt as TypeBound>::Min::value());
+                assert_eq!(<$pt>::MIN, <<$pt as TypeBound>::Min as ToValue<$pt>>::value());
             }
 
             #[test]
@@ -228,7 +228,7 @@ mod tests {
         ( $pt:ty ) => {
             #[test]
             fn inner_max() {
-                assert_eq!(<$pt>::MAX, <$pt as TypeBound>::Max::value());
+                assert_eq!(<$pt>::MAX, <<$pt as TypeBound>::Max as ToValue<$pt>>::value());
             }
 
             #[test]
@@ -243,7 +243,7 @@ mod tests {
         ( $pt:ty ) => {
             #[test]
             fn zero() {
-                assert_eq!((0 as $pt), Z0::value());
+                assert_eq!((0 as $pt), <Z0 as ToValue<$pt>>::value());
             }
         };
     }
@@ -252,12 +252,12 @@ mod tests {
         ( $pt:ty ) => {
             #[test]
             fn false_() {
-                assert_eq!(false as $pt, B0::value());
+                assert_eq!(false as $pt, <B0 as ToValue<$pt>>::value());
             }
 
             #[test]
             fn true_() {
-                assert_eq!(true as $pt, B1::value());
+                assert_eq!(true as $pt, <B1 as ToValue<$pt>>::value());
             }
         };
     }

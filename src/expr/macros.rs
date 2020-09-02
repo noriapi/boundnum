@@ -12,10 +12,11 @@ macro_rules! define_unary_operator {
             use super::*;
             use $val_trait as ValTrait;
             use $type_operator as TypeOperator;
+            use std::marker::PhantomData;
 
             $(#[$meta])*
             #[derive(Debug, Default, Clone, Copy)]
-            pub struct $name<S>(S);
+            pub struct $name<S>(PhantomData<S>);
             impl<A, S> ValueExpr<A> for $name<S>
             where
                 S: ValueExpr<A>,
@@ -52,12 +53,13 @@ macro_rules! define_binary_operator {
             use super::*;
             use $type_operator as TypeOperator;
             use $val_trait as ValTrait;
+            use std::marker::PhantomData;
 
             $(#[$meta])*
             #[derive(Debug, Default, Clone, Copy)]
             pub struct $name<L, R> {
-                lhs: L,
-                rhs: R,
+                lhs: PhantomData<L>,
+                rhs: PhantomData<R>,
             }
 
             impl<A, L, R> ValueExpr<A> for $name<L, R>
