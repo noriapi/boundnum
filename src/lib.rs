@@ -12,20 +12,19 @@
 //! }
 //! ```
 
-mod default;
+mod bounded_impls;
 pub mod expr;
 pub mod value;
 
 pub use typenum;
 
-use default::DefaultValueType;
 use expr::{AsBound, Contains};
 use shrinkwraprs::Shrinkwrap;
 use std::marker::PhantomData;
 use value::ToValue;
 
 /// A wrapper struct representing bounded numeric type.
-#[derive(Shrinkwrap, Copy, Clone, Debug)]
+#[derive(Shrinkwrap, Copy, Clone, Debug, Hash, Eq, Ord)]
 pub struct Bounded<T, B: AsBound<T>> {
     #[shrinkwrap(main_field)]
     value: T,
@@ -46,22 +45,6 @@ impl<T, B: AsBound<T>> Bounded<T, B> {
 
     pub fn value(self) -> T {
         self.value
-    }
-}
-
-/// If the bound contains zero, the `Bounded` implements `Default` trait.
-///
-/// If `B: AsBound` contains `T`'s default value, `Bounded<T, B>` implements `Default` trait.
-impl<T, B> Default for Bounded<T, B>
-where
-    T: DefaultValueType,
-    B: AsBound<T> + Contains<<T as DefaultValueType>::Output, Output = typenum::True>,
-{
-    fn default() -> Self {
-        Bounded {
-            value: T::default(),
-            bound: PhantomData,
-        }
     }
 }
 
@@ -90,33 +73,5 @@ where
         } else {
             None
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use expr::*;
-    use typenum::consts::*;
-
-    type UnBoundedI32 = Bounded<i32, True>;
-    type NonZeroI32 = Bounded<i32, Gt<Arg, Z0>>;
-
-    #[test]
-    fn bounded_is_copyable() {
-        use impls::impls;
-        assert!(impls!(UnBoundedI32: Copy));
-    }
-
-    #[test]
-    fn impl_default() {
-        use impls::impls;
-        assert!(impls!(UnBoundedI32: Default))
-    }
-
-    #[test]
-    fn not_impl_default() {
-        use impls::impls;
-        assert!(impls!(NonZeroI32: !Default))
     }
 }
