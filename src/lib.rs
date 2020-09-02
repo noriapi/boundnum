@@ -24,7 +24,7 @@ use std::marker::PhantomData;
 use value::ToValue;
 
 /// A wrapper struct representing bounded numeric type.
-#[derive(Shrinkwrap, Copy, Clone, Debug, Hash, Eq, Ord)]
+#[derive(Shrinkwrap, Copy, Clone, Debug)]
 pub struct Bounded<T, B: AsBound<T>> {
     #[shrinkwrap(main_field)]
     value: T,

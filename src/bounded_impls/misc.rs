@@ -3,7 +3,7 @@ use crate::{
     value::ToValue,
     Bounded,
 };
-use std::marker::PhantomData;
+use std::{hash::Hash, marker::PhantomData};
 use typenum::{U0, Z0};
 
 pub trait DefaultValueType: std::marker::Sized {
@@ -69,5 +69,15 @@ where
             value: T::default(),
             bound: PhantomData,
         }
+    }
+}
+
+impl<T, B> Hash for Bounded<T, B>
+where
+    B: AsBound<T>,
+    T: Hash,
+{
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.as_ref().hash(state)
     }
 }
