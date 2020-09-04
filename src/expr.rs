@@ -2,18 +2,18 @@
 
 #[macro_use]
 mod macros;
-mod aliase;
 mod arith;
 mod bit;
 mod cmp;
 mod other;
+mod range;
 mod typenum;
 
-pub use aliase::*;
 pub use arith::*;
 pub use bit::*;
 pub use cmp::*;
 pub use other::*;
+pub use range::*;
 
 /// Represents a expression for values.
 pub trait ValueExpr<A> {
