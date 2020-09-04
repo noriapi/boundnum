@@ -12,15 +12,17 @@
 //! }
 //! ```
 
+#![no_std]
+
 mod bounded_impls;
 pub mod expr;
 pub mod value;
 
 pub use typenum;
 
+use core::marker::PhantomData;
 use expr::{AsBound, Contains};
 use shrinkwraprs::Shrinkwrap;
-use std::marker::PhantomData;
 use value::ToValue;
 
 /// A wrapper struct representing bounded numeric type.

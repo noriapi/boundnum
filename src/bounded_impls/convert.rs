@@ -1,6 +1,6 @@
 //! refers [core::convert](https://doc.rust-lang.org/src/core/convert/num.rs.html)
 use crate::{AsBound, Bounded};
-use std::convert::{TryFrom, TryInto};
+use core::convert::{TryFrom, TryInto};
 
 macro_rules! impl_from_bounded_for_internal_value {
     ($Internal: ty) => {

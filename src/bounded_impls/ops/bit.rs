@@ -1,5 +1,5 @@
 use crate::{AsBound, Bounded};
-use std::ops::{
+use core::ops::{
     BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Not, Shl, ShlAssign, Shr,
     ShrAssign,
 };

@@ -1,7 +1,7 @@
 //! https://github.com/rust-lang/rust/blob/36b0d7e25769e88fec85e1d073196065a7f2d7c4/library/core/src/cmp.rs#L1036
 
 use crate::{expr::AsBound, Bounded};
-use std::cmp::Ordering;
+use core::cmp::Ordering;
 
 impl<T, B> Eq for Bounded<T, B>
 where
