@@ -14,6 +14,10 @@
 
 #![no_std]
 
+#[cfg(any(feature = "std", test))]
+#[macro_use]
+extern crate std;
+
 mod bounded_impls;
 pub mod expr;
 pub mod value;
