@@ -1,6 +1,6 @@
 //! refers [rust/num.rs](https://github.com/rust-lang/rust/blob/master/library/core/src/fmt/num.rs)
 use crate::{expr::AsBound, Bounded};
-use std::fmt;
+use core::fmt;
 
 macro_rules! impl_trait {
     ($Trait:path) => {

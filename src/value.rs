@@ -1,6 +1,6 @@
 //! Type to value conversions.
 
-use std::ops::Add;
+use core::ops::Add;
 use typenum::*;
 
 pub trait ToValue<I> {

@@ -7,10 +7,11 @@ edition = "2018"
 license-file = "LICENSE"
 repository = "https://github.com/noriapi/boundnum"
 readme = "README.md"
+categories = ["no-std"]
 
 [dependencies]
 typenum = "1.12.0"
-shrinkwraprs = "0.3.0"
+shrinkwraprs = { version = "0.3.0", default-features = false }
 
 [dev-dependencies]
 impls = "1.0.3"

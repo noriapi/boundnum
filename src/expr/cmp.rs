@@ -1,15 +1,15 @@
 use super::{Call, TypeExpr, ValType, ValueExpr};
 
 mod helper_traits {
-    pub trait OrdExt<R>: std::cmp::Ord {
+    pub trait OrdExt<R>: core::cmp::Ord {
         type Output;
         fn cmp(self, rhs: R) -> Self::Output;
     }
 
-    impl<L: std::cmp::Ord> OrdExt<L> for L {
-        type Output = std::cmp::Ordering;
+    impl<L: core::cmp::Ord> OrdExt<L> for L {
+        type Output = core::cmp::Ordering;
         fn cmp(self, rhs: L) -> Self::Output {
-            std::cmp::Ord::cmp(&self, &rhs)
+            core::cmp::Ord::cmp(&self, &rhs)
         }
     }
 
@@ -57,20 +57,20 @@ mod helper_traits {
         }
     }
 
-    pub trait MinMax<R>: std::cmp::Ord {
+    pub trait MinMax<R>: core::cmp::Ord {
         type Output;
         fn max(self, rhs: R) -> Self::Output;
         fn min(self, rhs: R) -> Self::Output;
     }
 
-    impl<L: std::cmp::Ord> MinMax<L> for L {
+    impl<L: core::cmp::Ord> MinMax<L> for L {
         type Output = L;
         fn max(self, rhs: L) -> Self::Output {
-            std::cmp::Ord::max(self, rhs)
+            core::cmp::Ord::max(self, rhs)
         }
 
         fn min(self, rhs: L) -> Self::Output {
-            std::cmp::Ord::min(self, rhs)
+            core::cmp::Ord::min(self, rhs)
         }
     }
 }
@@ -79,7 +79,7 @@ use helper_traits::*;
 
 define_binary_operator! {
     cmp,
-    /// Represents `std::cmp::Ord::cmp`
+    /// Represents `core::cmp::Ord::cmp`
     Cmp,
     OrdExt,
     OrdExt::cmp,
@@ -88,7 +88,7 @@ define_binary_operator! {
 
 define_binary_operator! {
     eq,
-    /// Represents `std::cmp::PartialEq::eq`
+    /// Represents `core::cmp::PartialEq::eq`
     Eq,
     PartialEqExt,
     PartialEqExt::eq,
@@ -97,7 +97,7 @@ define_binary_operator! {
 
 define_binary_operator! {
     ne,
-    /// Represents `std::cmp::PartialEq::ne`
+    /// Represents `core::cmp::PartialEq::ne`
     Ne,
     PartialEqExt,
     PartialEqExt::ne,
@@ -106,7 +106,7 @@ define_binary_operator! {
 
 define_binary_operator! {
     gt,
-    /// Represents `std::cmp::PartialOrd::gt`
+    /// Represents `core::cmp::PartialOrd::gt`
     Gt,
     PartialOrdExt,
     PartialOrdExt::gt,
@@ -115,7 +115,7 @@ define_binary_operator! {
 
 define_binary_operator! {
     ge,
-    /// Represents `std::cmp::PartialOrd::ge`
+    /// Represents `core::cmp::PartialOrd::ge`
     Ge,
     PartialOrdExt,
     PartialOrdExt::ge,
@@ -124,7 +124,7 @@ define_binary_operator! {
 
 define_binary_operator! {
     lt,
-    /// Represents `std::cmp::PartialOrd::lt`
+    /// Represents `core::cmp::PartialOrd::lt`
     Lt,
     PartialOrdExt,
     PartialOrdExt::lt,
@@ -133,7 +133,7 @@ define_binary_operator! {
 
 define_binary_operator! {
     le,
-    /// Represents `std::cmp::PartialOrd::le`
+    /// Represents `core::cmp::PartialOrd::le`
     Le,
     PartialOrdExt,
     PartialOrdExt::le,
@@ -142,7 +142,7 @@ define_binary_operator! {
 
 define_binary_operator! {
     max,
-    /// Represents `std::cmp::Ord::max`
+    /// Represents `core::cmp::Ord::max`
     Max,
     MinMax,
     MinMax::max,
@@ -151,7 +151,7 @@ define_binary_operator! {
 
 define_binary_operator! {
     min,
-    /// Represents `std::cmp::Ord::min`
+    /// Represents `core::cmp::Ord::min`
     Min,
     MinMax,
     MinMax::min,

@@ -12,7 +12,7 @@ macro_rules! define_unary_operator {
             use super::*;
             use $val_trait as ValTrait;
             use $type_operator as TypeOperator;
-            use std::marker::PhantomData;
+            use core::marker::PhantomData;
 
             $(#[$meta])*
             #[derive(Debug, Default, Clone, Copy)]
@@ -53,7 +53,7 @@ macro_rules! define_binary_operator {
             use super::*;
             use $type_operator as TypeOperator;
             use $val_trait as ValTrait;
-            use std::marker::PhantomData;
+            use core::marker::PhantomData;
 
             $(#[$meta])*
             #[derive(Debug, Default, Clone, Copy)]

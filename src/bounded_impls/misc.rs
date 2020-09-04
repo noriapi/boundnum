@@ -3,10 +3,10 @@ use crate::{
     value::ToValue,
     Bounded,
 };
-use std::{hash::Hash, marker::PhantomData};
+use core::{hash::Hash, marker::PhantomData};
 use typenum::{U0, Z0};
 
-pub trait DefaultValueType: std::marker::Sized {
+pub trait DefaultValueType: core::marker::Sized {
     type Output: ToValue<Self>;
 
     #[inline]
@@ -77,7 +77,7 @@ where
     B: AsBound<T>,
     T: Hash,
 {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
         self.as_ref().hash(state)
     }
 }
