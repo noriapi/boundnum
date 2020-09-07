@@ -38,7 +38,7 @@ impl ToValue<core::ops::RangeFull> for RangeFull {
 /// (Start..=End)
 pub type RangeInclusive<Start, End> = BitAnd<Ge<Arg, Start>, Le<Arg, End>>;
 
-impl<T, Start, End> ToValue<core::ops::RangeInclusive<T>> for Range<Start, End>
+impl<T, Start, End> ToValue<core::ops::RangeInclusive<T>> for RangeInclusive<Start, End>
 where
     Start: ToValue<T>,
     End: ToValue<T>,
