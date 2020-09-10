@@ -24,8 +24,8 @@ pub mod value;
 
 pub use typenum;
 
-use core::marker::PhantomData;
-use expr::{AsBound, Contains};
+use core::{iter::FusedIterator, marker::PhantomData};
+use expr::{AsBound, Contains, Range, RangeFrom, RangeInclusive};
 use shrinkwraprs::Shrinkwrap;
 use value::ToValue;
 
@@ -51,6 +51,45 @@ impl<T, B: AsBound<T>> Bounded<T, B> {
 
     pub fn value(self) -> T {
         self.value
+    }
+}
+
+impl<T, Start, End> Bounded<T, Range<Start, End>>
+where
+    Range<Start, End>: AsBound<T> + ToValue<core::ops::Range<T>>,
+    core::ops::Range<T>: Iterator<Item = T> + DoubleEndedIterator + FusedIterator,
+{
+    pub fn iter() -> impl Iterator<Item = Self> + DoubleEndedIterator + FusedIterator {
+        Range::<Start, End>::VALUE.map(|value| Bounded {
+            value,
+            bound: PhantomData,
+        })
+    }
+}
+
+impl<T, Start, End> Bounded<T, RangeInclusive<Start, End>>
+where
+    RangeInclusive<Start, End>: AsBound<T> + ToValue<core::ops::RangeInclusive<T>>,
+    core::ops::RangeInclusive<T>: Iterator<Item = T> + DoubleEndedIterator + FusedIterator,
+{
+    pub fn iter() -> impl Iterator<Item = Self> + DoubleEndedIterator + FusedIterator {
+        RangeInclusive::<Start, End>::VALUE.map(|value| Bounded {
+            value,
+            bound: PhantomData,
+        })
+    }
+}
+
+impl<T, Start> Bounded<T, RangeFrom<Start>>
+where
+    RangeFrom<Start>: AsBound<T> + ToValue<core::ops::RangeFrom<T>>,
+    core::ops::RangeFrom<T>: Iterator<Item = T> + FusedIterator,
+{
+    pub fn iter() -> impl Iterator<Item = Self> + FusedIterator {
+        RangeFrom::<Start>::VALUE.map(|value| Bounded {
+            value,
+            bound: PhantomData,
+        })
     }
 }
 
@@ -104,6 +143,47 @@ where
             })
         } else {
             None
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn range_iter() {
+        use typenum::consts::*;
+        assert!(Bounded::<i8, Range<N3, P3>>::iter().eq(-3..3));
+    }
+
+    #[test]
+    fn range_inclusive_iter() {
+        use typenum::consts::*;
+        assert!(Bounded::<i8, RangeInclusive<N3, P3>>::iter().eq(-3..=3));
+    }
+
+    #[test]
+    fn range_from_iter() {
+        use typenum::consts::*;
+        let mut bounded = Bounded::<i8, RangeFrom<N3>>::iter();
+        let mut prim = -3..;
+
+        // Check manually to avoid panic due to overflow.
+        for _ in -3..127 {
+            assert!(|| -> bool {
+                let b = match bounded.next() {
+                    None => return prim.next().is_none(),
+                    Some(val) => val,
+                };
+
+                let p = match prim.next() {
+                    None => return false,
+                    Some(val) => val,
+                };
+
+                b == p
+            }());
         }
     }
 }
